@@ -1,0 +1,1002 @@
+[
+  {
+    "handle": "levelsio",
+    "name": "Pieter Levels",
+    "product": "PhotoAI, RemoteOK, Nomad List",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 744000,
+    "notes": "The reference account for the entire cluster; revenue in bio",
+    "flag": null
+  },
+  {
+    "handle": "agazdecki",
+    "name": "Andrew Gazdecki",
+    "product": "Acquire.com",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 312000,
+    "notes": "Daily bootstrapper cheerleading; the crowd's hype man",
+    "flag": null
+  },
+  {
+    "handle": "marc_louvion",
+    "name": "Marc Lou",
+    "product": "ShipFast + app portfolio",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 280000,
+    "notes": "Ships and posts near-daily; revenue screenshots",
+    "flag": null
+  },
+  {
+    "handle": "adamwathan",
+    "name": "Adam Wathan",
+    "product": "Tailwind CSS / Tailwind Plus",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 200000,
+    "notes": "Bootstrapped to 8 figures; revenue transparency posts",
+    "flag": null
+  },
+  {
+    "handle": "zach_yadegari",
+    "name": "Zach Yadegari",
+    "product": "Cal AI",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 200000,
+    "notes": "Viral revenue poster; exactly the leaderboard type",
+    "flag": null
+  },
+  {
+    "handle": "tibo_maker",
+    "name": "Tibo Louis-Lucas",
+    "product": "Tweet Hunter/Taplio exit, new builds",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 198000,
+    "notes": "Growth-tip machine; 47K lifetime posts",
+    "flag": null
+  },
+  {
+    "handle": "easlo",
+    "name": "Easlo",
+    "product": "Notion templates (7 figures solo)",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 175000,
+    "notes": "Solo digital products; template launches",
+    "flag": null
+  },
+  {
+    "handle": "jackfriks",
+    "name": "Jack Friks",
+    "product": "Post Bridge, curiosity quench",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 151000,
+    "notes": "Solo consumer apps; 46K lifetime posts",
+    "flag": null
+  },
+  {
+    "handle": "florinpop1705",
+    "name": "Florin Pop",
+    "product": "$1M challenge, dev products",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 150000,
+    "notes": "Build-in-public challenges",
+    "flag": null
+  },
+  {
+    "handle": "nico_jeannen",
+    "name": "Nico Jeannen",
+    "product": "Sold Talknotes; new builds",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 150000,
+    "notes": "Posts every build and number",
+    "flag": null
+  },
+  {
+    "handle": "dagorenouf",
+    "name": "Dagobert Renouf",
+    "product": "Logology; startup memes",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 127000,
+    "notes": "125K lifetime posts; meme engine of the cluster",
+    "flag": null
+  },
+  {
+    "handle": "johnrushx",
+    "name": "John Rush",
+    "product": "SEObot + 20 products",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 117000,
+    "notes": "Posts many times a day",
+    "flag": null
+  },
+  {
+    "handle": "ajlkn",
+    "name": "AJ",
+    "product": "Carrd",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 110000,
+    "notes": "Quiet legend; solo product with millions of users",
+    "flag": null
+  },
+  {
+    "handle": "thekitze",
+    "name": "Kitze",
+    "product": "Sizzy, Benji",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 110000,
+    "notes": "App shipper with big personality",
+    "flag": null
+  },
+  {
+    "handle": "arvidkahl",
+    "name": "Arvid Kahl",
+    "product": "FeedbackPanda exit; educator",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 100000,
+    "notes": "Daily bootstrapping content; community anchor",
+    "flag": null
+  },
+  {
+    "handle": "dannypostmaa",
+    "name": "Danny Postma",
+    "product": "HeadshotPro",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 100000,
+    "notes": "AI products run indie-style; revenue posts",
+    "flag": null
+  },
+  {
+    "handle": "tdinh_me",
+    "name": "Tony Dinh",
+    "product": "TypingMind",
+    "tier": 1,
+    "tierLabel": "1 - Anchor (100K+)",
+    "approxFollowers": 100000,
+    "notes": "Daily build-in-public; revenue updates",
+    "flag": null
+  },
+  {
+    "handle": "aarondfrancis",
+    "name": "Aaron Francis",
+    "product": "Try Hard Studios; courses",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 90000,
+    "notes": "Daily building; beloved dev-adjacent indie",
+    "flag": null
+  },
+  {
+    "handle": "damengchen",
+    "name": "Damon Chen",
+    "product": "Testimonial, PDF.ai",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 90000,
+    "notes": "Revenue milestones in public",
+    "flag": null
+  },
+  {
+    "handle": "simonhoiberg",
+    "name": "Simon Hoiberg",
+    "product": "FeedHive",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 90000,
+    "notes": "SaaS content machine",
+    "flag": null
+  },
+  {
+    "handle": "blakeandersonw",
+    "name": "Blake Anderson",
+    "product": "Umax, Cal AI apps",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 80000,
+    "notes": "Consumer app shipper",
+    "flag": null
+  },
+  {
+    "handle": "dvassallo",
+    "name": "Daniel Vassallo",
+    "product": "Small Bets",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 80000,
+    "notes": "Loyal audience; portfolio-of-bets voice",
+    "flag": null
+  },
+  {
+    "handle": "harrydry",
+    "name": "Harry Dry",
+    "product": "Marketing Examples",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 70000,
+    "notes": "Beloved in the cluster",
+    "flag": null
+  },
+  {
+    "handle": "ImSh4yy",
+    "name": "Shayan",
+    "product": "UserJot, LogSnag",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 70000,
+    "notes": "Ships constantly; strong replier",
+    "flag": null
+  },
+  {
+    "handle": "BrettFromDJ",
+    "name": "Brett Williams",
+    "product": "Designjoy ($1M+/yr solo)",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 65000,
+    "notes": "Solo productized design; revenue posts",
+    "flag": null
+  },
+  {
+    "handle": "Shpigford",
+    "name": "Josh Pigford",
+    "product": "Baremetrics, Maybe",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 65000,
+    "notes": "Serial build-in-public",
+    "flag": null
+  },
+  {
+    "handle": "thisiskp_",
+    "name": "KP",
+    "product": "Build-in-public, AI launches",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 65000,
+    "notes": "Heavy replier; community connector",
+    "flag": null
+  },
+  {
+    "handle": "csallen",
+    "name": "Courtland Allen",
+    "product": "Indie Hackers (founder)",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 60000,
+    "notes": "The community's founding voice",
+    "flag": null
+  },
+  {
+    "handle": "robwalling",
+    "name": "Rob Walling",
+    "product": "MicroConf, TinySeed",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 50000,
+    "notes": "Bootstrapper institution",
+    "flag": null
+  },
+  {
+    "handle": "MeetKevon",
+    "name": "Kevon Cheung",
+    "product": "Public Lab; BIP courses",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 45000,
+    "notes": "Teaches building in public",
+    "flag": null
+  },
+  {
+    "handle": "yongfook",
+    "name": "Jon Yongfook",
+    "product": "Bannerbear",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 45000,
+    "notes": "MRR breakdowns",
+    "flag": null
+  },
+  {
+    "handle": "DruRly",
+    "name": "Dru Riley",
+    "product": "Trends.vc",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 40000,
+    "notes": "Solo research product",
+    "flag": null
+  },
+  {
+    "handle": "mijustin",
+    "name": "Justin Jackson",
+    "product": "Transistor.fm",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 40000,
+    "notes": "Calm-company voice",
+    "flag": null
+  },
+  {
+    "handle": "robhope",
+    "name": "Rob Hope",
+    "product": "One Page Love, Yo! Podcast",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 40000,
+    "notes": "Landing-page teardowns",
+    "flag": null
+  },
+  {
+    "handle": "coreyhainesco",
+    "name": "Corey Haines",
+    "product": "Conversion Factory, Swipe Files",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Marketing-for-SaaS indie",
+    "flag": null
+  },
+  {
+    "handle": "DanKulkov",
+    "name": "Dan Kulkov",
+    "product": "MakerBox, FounderPal",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Daily marketing-for-makers posts",
+    "flag": null
+  },
+  {
+    "handle": "ivankutskir",
+    "name": "Ivan Kutskir",
+    "product": "Photopea (solo)",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Cult favorite; one-person Photoshop",
+    "flag": null
+  },
+  {
+    "handle": "pbteja1998",
+    "name": "Bhanu Teja P",
+    "product": "SiteGPT, Feather",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Ships fast, posts numbers",
+    "flag": null
+  },
+  {
+    "handle": "rameerez",
+    "name": "Javi Rameerez",
+    "product": "Indie app portfolio",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Solo maker essays and ships",
+    "flag": null
+  },
+  {
+    "handle": "RoxCodes",
+    "name": "Rox",
+    "product": "ThumbnailTest (sold); new builds",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Builds live on stream",
+    "flag": null
+  },
+  {
+    "handle": "tylertringas",
+    "name": "Tyler Tringas",
+    "product": "Calm Fund; StoreMapper exit",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 35000,
+    "notes": "Micro-SaaS voice",
+    "flag": null
+  },
+  {
+    "handle": "AndreyAzimov",
+    "name": "Andrey Azimov",
+    "product": "Sheet2Site; Hardcore Year",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 30000,
+    "notes": "OG build-in-public",
+    "flag": null
+  },
+  {
+    "handle": "aribk24",
+    "name": "Arib Khan",
+    "product": "Musicfy AI",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 30000,
+    "notes": "Young AI shipper, indie-run",
+    "flag": null
+  },
+  {
+    "handle": "mubashariqbal",
+    "name": "Mubashar Iqbal",
+    "product": "100+ side products",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 30000,
+    "notes": "Prolific shipper",
+    "flag": null
+  },
+  {
+    "handle": "rosiesherry",
+    "name": "Rosie Sherry",
+    "product": "Rosieland",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 30000,
+    "notes": "Community-building voice",
+    "flag": null
+  },
+  {
+    "handle": "thepatwalls",
+    "name": "Pat Walls",
+    "product": "Starter Story",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 30000,
+    "notes": "Indie media product; active",
+    "flag": null
+  },
+  {
+    "handle": "markosaric",
+    "name": "Marko Saric",
+    "product": "Plausible Analytics",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 28000,
+    "notes": "Bootstrapped analytics growth story",
+    "flag": null
+  },
+  {
+    "handle": "sveta_bay",
+    "name": "Sveta Bay",
+    "product": "FounderPal, MakerBox",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 28000,
+    "notes": "Marketing-for-makers; open revenue",
+    "flag": null
+  },
+  {
+    "handle": "monicalent",
+    "name": "Monica Lent",
+    "product": "Affilimate, Blogging for Devs",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 27000,
+    "notes": "Indie SaaS + community",
+    "flag": "verify activity"
+  },
+  {
+    "handle": "d__raptis",
+    "name": "Jim Raptis",
+    "product": "MagicPattern",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Design tools; BIP",
+    "flag": null
+  },
+  {
+    "handle": "jdnoc",
+    "name": "Jordan O'Connor",
+    "product": "Closet Tools",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Solo SaaS, quiet consistency",
+    "flag": null
+  },
+  {
+    "handle": "kylegawley",
+    "name": "Kyle Gawley",
+    "product": "Gravity boilerplate",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "SaaS boilerplate; advice posts",
+    "flag": null
+  },
+  {
+    "handle": "louispereira",
+    "name": "Louis Pereira",
+    "product": "AudioPen",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Beloved solo AI-adjacent product",
+    "flag": null
+  },
+  {
+    "handle": "marckohlbrugge",
+    "name": "Marc Kohlbrugge",
+    "product": "WIP.co, BetaList",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Credited with #buildinpublic; runs the maker community",
+    "flag": null
+  },
+  {
+    "handle": "SebastianRoehl",
+    "name": "Sebastian Roehl",
+    "product": "HabitKit",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "$15-30K/mo solo app; podcast circuit",
+    "flag": null
+  },
+  {
+    "handle": "T_Zahil",
+    "name": "Thomas Sanlis",
+    "product": "Uneed directory",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Directory builder; daily maker posts",
+    "flag": null
+  },
+  {
+    "handle": "Yannick_Veys",
+    "name": "Yannick Veys",
+    "product": "Hypefury",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "Posts about posting; perfect fit",
+    "flag": null
+  },
+  {
+    "handle": "yasser_elsaid_",
+    "name": "Yasser Elsaid",
+    "product": "Chatbase",
+    "tier": 2,
+    "tierLabel": "2 - Core (25-100K)",
+    "approxFollowers": 25000,
+    "notes": "$4M/yr solo story",
+    "flag": null
+  },
+  {
+    "handle": "channingallen",
+    "name": "Channing Allen",
+    "product": "Indie Hackers (co-founder)",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 22000,
+    "notes": "IH re-indie relaunch voice",
+    "flag": null
+  },
+  {
+    "handle": "jackmcdade",
+    "name": "Jack McDade",
+    "product": "Statamic CMS",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 22000,
+    "notes": "Indie CMS with personality",
+    "flag": null
+  },
+  {
+    "handle": "dmytrokrasun",
+    "name": "Dmytro Krasun",
+    "product": "ScreenshotOne",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 20000,
+    "notes": "Posts daily; open metrics",
+    "flag": null
+  },
+  {
+    "handle": "helloitsolly",
+    "name": "Olly Meakings",
+    "product": "Senja",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 20000,
+    "notes": "$70K MRR build-in-public",
+    "flag": null
+  },
+  {
+    "handle": "stevencravotta",
+    "name": "Steven Cravotta",
+    "product": "Puff Count",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 20000,
+    "notes": "App marketing stories",
+    "flag": null
+  },
+  {
+    "handle": "dqmonn",
+    "name": "Dom Monn",
+    "product": "MentorCruise",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 18000,
+    "notes": "Bootstrapped marketplace; revenue posts",
+    "flag": null
+  },
+  {
+    "handle": "noahwbragg",
+    "name": "Noah Bragg",
+    "product": "Potion (sold); new apps",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 18000,
+    "notes": "Full journey in public",
+    "flag": null
+  },
+  {
+    "handle": "threehourcoffee",
+    "name": "Marie Ng",
+    "product": "Llama Life",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 18000,
+    "notes": "Solo founder; ADHD tools",
+    "flag": null
+  },
+  {
+    "handle": "alexbelogubov",
+    "name": "Alexander Belogubov",
+    "product": "ReplyGuy, IndieMerger",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Serial micro-products",
+    "flag": null
+  },
+  {
+    "handle": "czue",
+    "name": "Cory Zue",
+    "product": "SaaS Pegasus",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Solo dev products; essays",
+    "flag": null
+  },
+  {
+    "handle": "jmduke",
+    "name": "Justin Duke",
+    "product": "Buttondown",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Open ops and revenue writing",
+    "flag": null
+  },
+  {
+    "handle": "petecodes",
+    "name": "Pete Codes",
+    "product": "No CS Degree, High Signal",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Curates this exact community",
+    "flag": null
+  },
+  {
+    "handle": "philostar",
+    "name": "Phil McParlane",
+    "product": "4dayweek.io",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Solo job board",
+    "flag": null
+  },
+  {
+    "handle": "TweetsOfSumit",
+    "name": "Sumit Kumar",
+    "product": "Parqet",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 15000,
+    "notes": "Public revenue dashboard",
+    "flag": null
+  },
+  {
+    "handle": "jmckinven",
+    "name": "James McKinven",
+    "product": "Indie Bites, PodPanda",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 13000,
+    "notes": "Interviews the whole cluster",
+    "flag": null
+  },
+  {
+    "handle": "1HaKr",
+    "name": "Hari",
+    "product": "VisaList",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Solo product; milestone posts",
+    "flag": "verify handle"
+  },
+  {
+    "handle": "baptistejamin",
+    "name": "Baptiste Jamin",
+    "product": "Crisp",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Bootstrapped to scale; engineering takes",
+    "flag": null
+  },
+  {
+    "handle": "charlierward",
+    "name": "Charlie Ward",
+    "product": "Ramen Club",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Runs the indie community circuit",
+    "flag": null
+  },
+  {
+    "handle": "daniel_nguyenx",
+    "name": "Daniel Nguyen",
+    "product": "BoltAI",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Solo macOS AI app",
+    "flag": null
+  },
+  {
+    "handle": "earthlingworks",
+    "name": "Ruben Gamez",
+    "product": "SignWell",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Bootstrapped e-signature; MicroConf circuit",
+    "flag": null
+  },
+  {
+    "handle": "illyism",
+    "name": "Ilias Ism",
+    "product": "MagicSpace, Gaps",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "SEO-for-makers build-in-public",
+    "flag": "verify handle"
+  },
+  {
+    "handle": "jakobgreenfeld",
+    "name": "Jakob Greenfeld",
+    "product": "Business Brainstorms",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Experiments in public",
+    "flag": null
+  },
+  {
+    "handle": "jamesivings",
+    "name": "James Ivings",
+    "product": "Leave Me Alone",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Open revenue dashboard",
+    "flag": "verify handle"
+  },
+  {
+    "handle": "macgillbdavis",
+    "name": "Macgill Davis",
+    "product": "Rize.io",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Revenue transparency",
+    "flag": null
+  },
+  {
+    "handle": "Mike_Andreuzza",
+    "name": "Michael Andreuzza",
+    "product": "Lexington Themes",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Daily shipping and revenue posts",
+    "flag": null
+  },
+  {
+    "handle": "wilhelmklopp",
+    "name": "Wilhelm Klopp",
+    "product": "Simple Poll ($1M+ ARR solo)",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 12000,
+    "notes": "Solo Slack app milestone posts",
+    "flag": "verify handle"
+  },
+  {
+    "handle": "mjwhansen",
+    "name": "Michele Hansen",
+    "product": "Geocodio",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 11000,
+    "notes": "Bootstrapped duo; Deploy Empathy",
+    "flag": null
+  },
+  {
+    "handle": "alexwestco",
+    "name": "Alex West",
+    "product": "CyberLeads",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "$40K MRR public journey",
+    "flag": null
+  },
+  {
+    "handle": "chddaniel",
+    "name": "CH Daniel",
+    "product": "r/SaaS; exits",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Six-figure exits",
+    "flag": null
+  },
+  {
+    "handle": "clokehead",
+    "name": "Andy Cloke",
+    "product": "Data Fetcher",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Open revenue; Airtable ecosystem",
+    "flag": null
+  },
+  {
+    "handle": "itsjustamar",
+    "name": "Amar Ghose",
+    "product": "ZenMaid",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "$3M/yr bootstrapped",
+    "flag": null
+  },
+  {
+    "handle": "jhumanj",
+    "name": "Julien Nahum",
+    "product": "NoteForms, OpnForm",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Serial form tools",
+    "flag": null
+  },
+  {
+    "handle": "leenyburger",
+    "name": "Colleen Schnettler",
+    "product": "HelloQuery",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "MicroConf speaker; founder pod",
+    "flag": null
+  },
+  {
+    "handle": "mariemartens",
+    "name": "Marie Martens",
+    "product": "Tally Forms",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "$4M ARR build-in-public",
+    "flag": null
+  },
+  {
+    "handle": "mtlynch",
+    "name": "Michael Lynch",
+    "product": "TinyPilot (sold)",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Famous annual reviews; open finances",
+    "flag": null
+  },
+  {
+    "handle": "qayyumrajan",
+    "name": "Qayyum Rajan",
+    "product": "Micro-SaaS exits",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Serial builder",
+    "flag": null
+  },
+  {
+    "handle": "saasmakermac",
+    "name": "Mac Martine",
+    "product": "Castanet",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "SaaS journey in public",
+    "flag": null
+  },
+  {
+    "handle": "TheCraigHewitt",
+    "name": "Craig Hewitt",
+    "product": "Castos",
+    "tier": 3,
+    "tierLabel": "3 - Community (10-25K)",
+    "approxFollowers": 10000,
+    "notes": "Bootstrapped podcast hosting",
+    "flag": null
+  },
+  {
+    "handle": "gmcconnaughey",
+    "name": "Grant McConnaughey",
+    "product": "Postpone",
+    "tier": 4,
+    "tierLabel": "4 - Rising (<10K)",
+    "approxFollowers": 8000,
+    "notes": "Tool for X power users; open revenue",
+    "flag": null
+  },
+  {
+    "handle": "inkdrop_app",
+    "name": "Takuya Matsuyama",
+    "product": "Inkdrop",
+    "tier": 4,
+    "tierLabel": "4 - Rising (<10K)",
+    "approxFollowers": 8000,
+    "notes": "Dev vlogs; solo app",
+    "flag": null
+  },
+  {
+    "handle": "sobedominik",
+    "name": "Dominik Sobe",
+    "product": "HelpKit",
+    "tier": 4,
+    "tierLabel": "4 - Rising (<10K)",
+    "approxFollowers": 8000,
+    "notes": "Solo Notion-to-help-center; open MRR",
+    "flag": "verify handle"
+  },
+  {
+    "handle": "TylerMKing",
+    "name": "Tyler King",
+    "product": "Less Annoying CRM",
+    "tier": 4,
+    "tierLabel": "4 - Rising (<10K)",
+    "approxFollowers": 8000,
+    "notes": "Anti-VC voice; Startup to Last",
+    "flag": null
+  }
+]
