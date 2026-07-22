@@ -10,14 +10,6 @@ import { WindowToggle } from "./WindowToggle";
 
 const PAGE_SIZE = 25;
 
-const TIERS = [
-  { value: 0, label: "All tiers" },
-  { value: 1, label: "Anchor" },
-  { value: 2, label: "Core" },
-  { value: 3, label: "Community" },
-  { value: 4, label: "Rising" },
-];
-
 export function YapperBoard({
   entries,
   window,
@@ -30,13 +22,11 @@ export function YapperBoard({
   updatedLabel: string | null;
 }) {
   const [query, setQuery] = useState("");
-  const [tier, setTier] = useState(0);
   const [page, setPage] = useState(0);
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase().replace(/^@/, "");
     return entries.filter((e) => {
-      if (tier !== 0 && e.tier !== tier) return false;
       if (!q) return true;
       return (
         e.name.toLowerCase().includes(q) ||
@@ -44,7 +34,7 @@ export function YapperBoard({
         (e.companyName ?? "").toLowerCase().includes(q)
       );
     });
-  }, [entries, query, tier]);
+  }, [entries, query]);
 
   const pageCount = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
   const safePage = Math.min(page, pageCount - 1);
@@ -103,29 +93,7 @@ export function YapperBoard({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <select
-          value={tier}
-          onChange={(e) => {
-            setTier(Number(e.target.value));
-            setPage(0);
-          }}
-          className="stanley-control-button cursor-pointer appearance-none px-3 py-1.5 pr-7 text-[13px] font-medium"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2374787f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>\")",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 10px center",
-          }}
-          aria-label="Filter by tier"
-        >
-          {TIERS.map((t) => (
-            <option key={t.value} value={t.value}>
-              {t.label}
-            </option>
-          ))}
-        </select>
-
+      <div className="flex flex-wrap items-center justify-end gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <WindowToggle active={window} />
           <ToolbarButton onClick={copyLink} label="Copy link">
