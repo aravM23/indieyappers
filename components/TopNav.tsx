@@ -44,7 +44,7 @@ export async function TopNav() {
             </div>
           )}
           <a
-            href="https://www.getstanley.ai"
+            href="https://x.getstanley.ai/e/indie-hacker-x-stanley"
             target="_blank"
             rel="noopener noreferrer"
             className="stanley-brand-action inline-flex items-center gap-2 px-3.5 py-1.5 text-[13px] font-medium"
