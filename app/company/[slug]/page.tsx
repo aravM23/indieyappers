@@ -3,12 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCompanyDetail } from "@/lib/leaderboard";
-import type { TimeWindow } from "@/lib/types";
-import { formatCompact, formatNumber } from "@/lib/format";
+import type { TimeWindow, TopTweet } from "@/lib/types";
+import { formatCompact, formatNumber, formatRelative } from "@/lib/format";
 import { TopNav } from "@/components/TopNav";
 import { Avatar } from "@/components/Avatar";
 import { ExpandableText } from "@/components/ExpandableText";
-import { RankHistoryChart } from "@/components/RankHistoryChart";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +18,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const detail = getCompanyDetail(decodeURIComponent(slug), "7d");
-  return { title: detail ? `${detail.name} — Yapper` : "Yapper" };
+  return {
+    title: detail
+      ? `${detail.name} — Building Out Loud`
+      : "Building Out Loud",
+  };
 }
 
 export default async function CompanyPage({
@@ -35,14 +38,12 @@ export default async function CompanyPage({
   const detail = getCompanyDetail(decodeURIComponent(slug), window);
   if (!detail) notFound();
 
-  const collecting = detail.history.dates.length < 3;
-
   return (
     <>
       <TopNav />
       <main className="mx-auto w-full max-w-4xl flex-1 px-5 pb-16 pt-6 sm:px-8">
         <Link
-          href="/?tab=companies"
+          href="/"
           className="inline-flex items-center gap-1.5 text-[13px] font-medium text-text-secondary transition-colors hover:text-text"
         >
           <svg
@@ -60,25 +61,39 @@ export default async function CompanyPage({
             <path d="m12 19-7-7 7-7" />
             <path d="M19 12H5" />
           </svg>
-          All companies
+          Back to the board
         </Link>
 
-        {/* Banner */}
-        <div className="relative mt-4 h-36 overflow-hidden rounded-[var(--radius-xl)] bg-gray-950 sm:h-40">
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(560px 280px at 12% 130%, #8479ff59, transparent 70%), radial-gradient(620px 300px at 90% -30%, #5a4ee042, transparent 70%)",
-            }}
-          />
-          <span
-            aria-hidden
-            className="absolute -bottom-3 right-6 select-none font-display text-6xl italic leading-none text-white/[0.07] sm:text-7xl"
-          >
-            {detail.name}
-          </span>
+        {/* Banner: the top member's X banner when available, Stanley panel otherwise */}
+        <div className="relative mt-4 h-36 overflow-hidden rounded-[var(--radius-xl)] bg-gray-950 sm:h-44">
+          {detail.bannerUrl ? (
+            <Image
+              src={detail.bannerUrl}
+              alt=""
+              aria-hidden
+              fill
+              className="object-cover"
+              unoptimized
+              priority
+            />
+          ) : (
+            <>
+              <div
+                aria-hidden
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(560px 280px at 12% 130%, #8479ff59, transparent 70%), radial-gradient(620px 300px at 90% -30%, #5a4ee042, transparent 70%)",
+                }}
+              />
+              <span
+                aria-hidden
+                className="absolute -bottom-3 right-6 select-none font-display text-6xl italic leading-none text-white/[0.07] sm:text-7xl"
+              >
+                {detail.name}
+              </span>
+            </>
+          )}
         </div>
 
         {/* Company header — logo overlaps the banner like a profile page */}
@@ -234,34 +249,74 @@ export default async function CompanyPage({
           </div>
         </section>
 
-        {/* Rank history */}
+        {/* Top posts of the week */}
         <section className="mt-10">
-          <div className="mb-1 flex items-center gap-2.5">
+          <div className="mb-4">
             <h2 className="font-display text-xl leading-tight text-text">
-              Rank history
+              Top posts this week
             </h2>
-            {collecting && (
-              <span className="rounded-full bg-gray-100 px-2.5 py-0.5 font-code text-[10px] uppercase tracking-wider text-text-tertiary">
-                Still collecting data…
-              </span>
-            )}
+            <p className="mt-1 font-code text-[11px] text-text-tertiary">
+              Each member&apos;s three biggest posts from the last 7 days
+            </p>
           </div>
-          <p className="mb-4 font-code text-[11px] text-text-tertiary">
-            {window === "7d" ? "Last 7 days" : "Last 30 days"} · Top 10
-          </p>
-          <div className="rounded-[var(--radius-xl)] border border-border bg-surface p-5 shadow-[var(--shadow-sm)]">
-            {detail.history.dates.length > 0 ? (
-              <RankHistoryChart history={detail.history} />
-            ) : (
-              <p className="py-8 text-center text-[13px] text-text-tertiary">
-                No snapshots yet.
-              </p>
-            )}
+
+          <div className="flex flex-col gap-8">
+            {detail.members.map((m) => {
+              const tweets = detail.topTweets[m.handle] ?? [];
+              return (
+                <div key={m.handle}>
+                  <div className="mb-3 flex items-center gap-2.5">
+                    <Avatar name={m.name} url={m.avatarUrl} size={24} />
+                    <span className="text-[13px] font-medium text-text">
+                      {m.name}
+                    </span>
+                    <span className="font-code text-[11px] text-text-tertiary">
+                      @{m.handle}
+                    </span>
+                  </div>
+                  {tweets.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                      {tweets.map((t) => (
+                        <TweetCard key={t.tweetId} tweet={t} handle={m.handle} />
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="rounded-[var(--radius-md)] border border-border bg-surface px-4 py-3 text-[13px] text-text-tertiary">
+                      No original posts in the last 7 days.
+                    </p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </section>
 
       </main>
     </>
+  );
+}
+
+function TweetCard({ tweet, handle }: { tweet: TopTweet; handle: string }) {
+  return (
+    <a
+      href={`https://x.com/${handle}/status/${tweet.tweetId}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex flex-col justify-between gap-3 rounded-[var(--radius-lg)] border border-border bg-surface p-4 shadow-[var(--shadow-xs)] transition-all duration-150 hover:-translate-y-px hover:shadow-[var(--shadow-sm)]"
+    >
+      <p className="text-[13px] leading-relaxed text-text [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:5] overflow-hidden">
+        {tweet.text}
+      </p>
+      <div className="flex items-center justify-between gap-2 border-t border-border-subtle pt-3">
+        <span className="font-code text-[10.5px] text-text-tertiary tabular-nums">
+          {formatCompact(tweet.likes)} likes · {formatCompact(tweet.replies)}{" "}
+          replies · {formatCompact(tweet.impressions)} views
+        </span>
+        <span className="shrink-0 font-code text-[10.5px] text-text-tertiary">
+          {formatRelative(tweet.createdAt)}
+        </span>
+      </div>
+    </a>
   );
 }
 

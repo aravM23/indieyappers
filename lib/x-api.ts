@@ -5,6 +5,7 @@ export interface XUser {
   username: string;
   name: string;
   profile_image_url?: string;
+  profile_banner_url?: string;
   public_metrics?: {
     followers_count: number;
     following_count: number;
@@ -15,6 +16,7 @@ export interface XUser {
 
 export interface XTweet {
   id: string;
+  text: string;
   created_at: string;
   referenced_tweets?: { type: "retweeted" | "replied_to" | "quoted"; id: string }[];
   public_metrics?: {
@@ -60,7 +62,7 @@ export async function getUsersByHandles(handles: string[]): Promise<XUser[]> {
     const batch = handles.slice(i, i + 100);
     const url =
       `${API_BASE}/users/by?usernames=${batch.join(",")}` +
-      `&user.fields=profile_image_url,public_metrics`;
+      `&user.fields=profile_image_url,profile_banner_url,public_metrics`;
     const res = await xFetch(url);
     if (!res.ok) {
       throw new Error(`users/by failed: ${res.status} ${await res.text()}`);
@@ -86,7 +88,7 @@ export async function getUserTweetsSince(
     const params = new URLSearchParams({
       max_results: "100",
       start_time: startTime.toISOString(),
-      "tweet.fields": "created_at,referenced_tweets,public_metrics",
+      "tweet.fields": "text,created_at,referenced_tweets,public_metrics",
     });
     if (paginationToken) params.set("pagination_token", paginationToken);
 

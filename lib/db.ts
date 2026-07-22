@@ -87,7 +87,25 @@ function migrate(db: Database.Database) {
       handle TEXT NOT NULL REFERENCES founders(handle),
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS top_tweets (
+      handle TEXT NOT NULL REFERENCES founders(handle),
+      tweet_id TEXT NOT NULL,
+      text TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      likes INTEGER NOT NULL DEFAULT 0,
+      retweets INTEGER NOT NULL DEFAULT 0,
+      replies INTEGER NOT NULL DEFAULT 0,
+      impressions INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (handle, tweet_id)
+    );
   `);
+
+  try {
+    db.exec("ALTER TABLE founders ADD COLUMN banner_url TEXT");
+  } catch {
+    /* column already exists */
+  }
 
   // Marks accounts that joined by signing in with X (vs the curated seed),
   // plus their OAuth tokens (offline.access grants a refresh token).

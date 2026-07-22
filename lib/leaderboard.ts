@@ -3,13 +3,12 @@ import { companySlug } from "./slug";
 import {
   yapScore,
   type CompanyDetail,
-  type CompanyEntry,
   type FounderRow,
   type SnapshotRow,
   type LeaderboardEntry,
   type LeaderboardStats,
-  type RankHistory,
   type TimeWindow,
+  type TopTweet,
 } from "./types";
 
 type JoinedRow = FounderRow & Partial<SnapshotRow> & { captured_at?: string };
@@ -135,106 +134,6 @@ function getPreviousRanks(window: TimeWindow): Map<string, number> {
   return new Map(rows.map((row, i) => [row.handle, i + 1]));
 }
 
-/** Group founders by company and rank companies by combined yap score. */
-export function getCompanies(window: TimeWindow): CompanyEntry[] {
-  const entries = getLeaderboard(window);
-  const rows = latestSnapshotsJoin();
-  const byHandle = new Map(rows.map((r) => [r.handle, r]));
-
-  const groups = new Map<string, CompanyEntry & { _seen: boolean }>();
-  for (const e of entries) {
-    const key = e.companySlug;
-    const founder = byHandle.get(e.handle);
-    let g = groups.get(key);
-    if (!g) {
-      g = {
-        rank: 0,
-        slug: e.companySlug,
-        name: e.companyName ?? e.name,
-        domain: e.companyDomain,
-        logo: e.companyLogo ?? founder?.company_logo ?? null,
-        yapperCount: 0,
-        topYapperHandle: e.handle,
-        topYapperName: e.name,
-        topYapperAvatar: e.avatarUrl,
-        postsTotal: 0,
-        yapScore: 0,
-        interactions: 0,
-        impressions: 0,
-        delta: null,
-        rankDelta: null,
-        _seen: false,
-      };
-      groups.set(key, g);
-    }
-    g.yapperCount++;
-    g.postsTotal += e.postsTotal;
-    g.yapScore = Math.round((g.yapScore + e.yapScore) * 10) / 10;
-    g.interactions += e.interactions;
-    g.impressions += e.impressions;
-    if (e.delta !== null) g.delta = (g.delta ?? 0) + e.delta;
-    // entries are already sorted by yap score, so the first founder seen is the top yapper
-    if (!g._seen) {
-      g.topYapperHandle = e.handle;
-      g.topYapperName = e.name;
-      g.topYapperAvatar = e.avatarUrl;
-      g._seen = true;
-    }
-  }
-
-  const companies = [...groups.values()].map(({ _seen, ...rest }) => rest);
-  companies.sort(
-    (a, b) =>
-      b.impressions - a.impressions ||
-      b.yapScore - a.yapScore ||
-      b.postsTotal - a.postsTotal
-  );
-
-  // Company rank movement: rebuild the previous board from the previous
-  // snapshot's impressions and compare positions.
-  const prevByHandle = getPreviousImpressions(window);
-  const slugByHandle = new Map(entries.map((e) => [e.handle, e.companySlug]));
-  const prevCompanyImpressions = new Map<string, number>();
-  for (const [handle, impressions] of prevByHandle) {
-    const slug = slugByHandle.get(handle);
-    if (!slug) continue;
-    prevCompanyImpressions.set(
-      slug,
-      (prevCompanyImpressions.get(slug) ?? 0) + impressions
-    );
-  }
-  const prevOrder = [...prevCompanyImpressions.entries()].sort(
-    (a, b) => b[1] - a[1]
-  );
-  const prevRank = new Map(prevOrder.map(([slug], i) => [slug, i + 1]));
-
-  companies.forEach((c, i) => {
-    c.rank = i + 1;
-    const prev = prevRank.get(c.slug);
-    c.rankDelta = prev === undefined ? null : prev - c.rank;
-  });
-  return companies;
-}
-
-/** Impressions per founder as of the previous snapshot. */
-function getPreviousImpressions(window: TimeWindow): Map<string, number> {
-  const db = getDb();
-  const col = window === "7d" ? "impressions_7d" : "impressions_30d";
-  const rows = db
-    .prepare(
-      `SELECT s.handle, s.${col} AS impressions
-       FROM activity_snapshots s
-       WHERE s.id = (
-         SELECT id FROM activity_snapshots
-         WHERE handle = s.handle
-         ORDER BY captured_at DESC, id DESC
-         LIMIT 1 OFFSET 1
-       )`
-    )
-    .all() as { handle: string; impressions: number }[];
-  return new Map(rows.map((r) => [r.handle, r.impressions]));
-}
-
 /** Everything the company page needs: profile, ranked members, rank history. */
 export function getCompanyDetail(
   slug: string,
@@ -259,57 +158,46 @@ export function getCompanyDetail(
     description:
       founder.company_desc ??
       `${top.companyName ?? top.name} is what @${top.handle} ships when they're not posting. ${founder.notes}`,
+    bannerUrl: founder.banner_url,
     members,
-    history: getRankHistory(members.map((m) => m.handle), window),
+    topTweets: getTopTweets(members.map((m) => m.handle)),
   };
 }
 
-/**
- * Rank of each member within the company at every snapshot timestamp,
- * oldest first. Used by the rank history chart.
- */
-function getRankHistory(handles: string[], window: TimeWindow): RankHistory {
+/** Stored top posts of the week, keyed by handle, best first. */
+function getTopTweets(handles: string[]): Record<string, TopTweet[]> {
   const db = getDb();
-  const col = window === "7d" ? "posts_7d" : "posts_30d";
   const placeholders = handles.map(() => "?").join(",");
   const rows = db
     .prepare(
-      `SELECT handle, captured_at,
-              ${col}_original AS o, ${col}_reply AS r, ${col}_retweet AS t
-       FROM activity_snapshots
-       WHERE handle IN (${placeholders})
-       ORDER BY captured_at ASC`
+      `SELECT handle, tweet_id, text, created_at, likes, retweets, replies, impressions
+       FROM top_tweets WHERE handle IN (${placeholders})
+       ORDER BY (likes + retweets + replies) DESC`
     )
     .all(...handles) as {
     handle: string;
-    captured_at: string;
-    o: number;
-    r: number;
-    t: number;
+    tweet_id: string;
+    text: string;
+    created_at: string;
+    likes: number;
+    retweets: number;
+    replies: number;
+    impressions: number;
   }[];
 
-  const dates = [...new Set(rows.map((r) => r.captured_at))];
-  const scoreAt = new Map<string, Map<string, number>>();
-  for (const row of rows) {
-    if (!scoreAt.has(row.captured_at)) scoreAt.set(row.captured_at, new Map());
-    scoreAt.get(row.captured_at)!.set(row.handle, yapScore(row.o, row.r, row.t));
+  const byHandle: Record<string, TopTweet[]> = {};
+  for (const r of rows) {
+    (byHandle[r.handle] ??= []).push({
+      tweetId: r.tweet_id,
+      text: r.text,
+      createdAt: r.created_at,
+      likes: r.likes,
+      retweets: r.retweets,
+      replies: r.replies,
+      impressions: r.impressions,
+    });
   }
-
-  const series = handles.slice(0, 10).map((handle) => ({
-    handle,
-    ranks: dates.map((date) => {
-      const scores = scoreAt.get(date)!;
-      if (!scores.has(handle)) return null;
-      const mine = scores.get(handle)!;
-      let rank = 1;
-      for (const [other, score] of scores) {
-        if (other !== handle && score > mine) rank++;
-      }
-      return rank;
-    }),
-  }));
-
-  return { dates, series };
+  return byHandle;
 }
 
 export function getStats(window: TimeWindow): LeaderboardStats {

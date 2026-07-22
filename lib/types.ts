@@ -25,6 +25,7 @@ export interface FounderRow {
   company_domain: string | null;
   company_logo: string | null;
   company_desc: string | null;
+  banner_url: string | null;
 }
 
 export interface SnapshotRow {
@@ -74,33 +75,14 @@ export interface LeaderboardEntry {
   capturedAt: string | null;
 }
 
-export interface CompanyEntry {
-  rank: number;
-  slug: string;
-  name: string;
-  domain: string | null;
-  logo: string | null;
-  yapperCount: number;
-  topYapperHandle: string;
-  topYapperName: string;
-  topYapperAvatar: string | null;
-  postsTotal: number;
-  yapScore: number;
-  interactions: number;
+export interface TopTweet {
+  tweetId: string;
+  text: string;
+  createdAt: string;
+  likes: number;
+  retweets: number;
+  replies: number;
   impressions: number;
-  delta: number | null;
-  /** Rank movement vs the previous snapshot: positive = climbed. */
-  rankDelta: number | null;
-}
-
-export interface RankHistory {
-  /** ISO dates of each snapshot, oldest first. */
-  dates: string[];
-  series: {
-    handle: string;
-    /** Rank within the company at each date; null when no snapshot. */
-    ranks: (number | null)[];
-  }[];
 }
 
 export interface CompanyDetail {
@@ -109,8 +91,11 @@ export interface CompanyDetail {
   domain: string | null;
   logo: string | null;
   description: string | null;
+  /** X profile banner of the top member, if they have one. */
+  bannerUrl: string | null;
   members: LeaderboardEntry[];
-  history: RankHistory;
+  /** Top posts of the week per member handle. */
+  topTweets: Record<string, TopTweet[]>;
 }
 
 export interface LeaderboardStats {

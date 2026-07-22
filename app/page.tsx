@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getCompanies, getLeaderboard, getStats } from "@/lib/leaderboard";
+import { getLeaderboard, getStats } from "@/lib/leaderboard";
 import { getSessionUser } from "@/lib/auth";
 import type { TimeWindow } from "@/lib/types";
 import { AuthBanner } from "@/components/AuthBanner";
@@ -12,13 +12,11 @@ export const dynamic = "force-dynamic";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ window?: string; tab?: string; auth?: string }>;
+  searchParams: Promise<{ window?: string; auth?: string }>;
 }) {
   const params = await searchParams;
   const window: TimeWindow = params.window === "30d" ? "30d" : "7d";
-  const initialTab = params.tab === "companies" ? "companies" : "people";
   const entries = getLeaderboard(window);
-  const companies = getCompanies(window);
   const stats = getStats(window);
 
   const sessionUser = await getSessionUser();
@@ -48,8 +46,8 @@ export default async function Home({
             priority
           />
           <h1 className="mt-6 font-display text-4xl leading-tight text-text sm:text-5xl">
-            Who&apos;s the biggest{" "}
-            <em className="text-[var(--iris-700)]">yapper</em>?
+            Who&apos;s building the{" "}
+            <em className="text-[var(--iris-700)]">loudest</em>?
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-text-secondary">
             {entries.length} indie founders, ranked by how much they post on X.
@@ -68,9 +66,7 @@ export default async function Home({
 
         <YapperBoard
           entries={entries}
-          companies={companies}
           window={window}
-          initialTab={initialTab}
           sessionHandle={sessionUser?.handle ?? null}
           updatedLabel={
             stats.lastRefreshed

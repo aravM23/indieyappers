@@ -36,7 +36,7 @@ async function main() {
   const now = new Date().toISOString();
   const updateProfile = db.prepare(`
     UPDATE founders SET
-      x_user_id = ?, avatar_url = ?, followers = ?,
+      x_user_id = ?, avatar_url = ?, banner_url = ?, followers = ?,
       lifetime_tweet_count = ?, profile_updated_at = ?
     WHERE handle = ?
   `);
@@ -50,6 +50,8 @@ async function main() {
       u.id,
       // _normal is 48x48; strip the suffix for the full-size image
       u.profile_image_url?.replace("_normal", "") ?? null,
+      // banner URLs take a /1500x500 size suffix
+      u.profile_banner_url ? `${u.profile_banner_url}/1500x500` : null,
       u.public_metrics?.followers_count ?? null,
       u.public_metrics?.tweet_count ?? null,
       now,
@@ -66,6 +68,13 @@ async function main() {
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
+  const deleteTopTweets = db.prepare("DELETE FROM top_tweets WHERE handle = ?");
+  const insertTopTweet = db.prepare(`
+    INSERT OR REPLACE INTO top_tweets (
+      handle, tweet_id, text, created_at, likes, retweets, replies, impressions
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
   const start30 = new Date(Date.now() - 30 * DAY_MS);
   const cutoff7 = Date.now() - 7 * DAY_MS;
 
@@ -74,7 +83,22 @@ async function main() {
     const u = byHandle.get(f.handle.toLowerCase());
     if (!u) continue;
 
-    const tweets = await getUserTweetsSince(u.id, start30);
+    let tweets;
+    try {
+      tweets = await getUserTweetsSince(u.id, start30);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.includes("credits-depleted") || message.includes("402")) {
+        console.error(
+          `\nStopping: X API credits depleted after ${done} founders. ` +
+            "Top up credits in the X console and re-run npm run refresh " +
+            "(already-refreshed founders keep their new data)."
+        );
+        break;
+      }
+      console.warn(`  @${f.handle} tweets fetch failed, skipping:`, message);
+      continue;
+    }
     const counts = {
       "7d": { original: 0, reply: 0, retweet: 0, interactions: 0, impressions: 0 },
       "30d": { original: 0, reply: 0, retweet: 0, interactions: 0, impressions: 0 },
@@ -107,6 +131,30 @@ async function main() {
       counts["7d"].impressions,
       counts["30d"].impressions
     );
+
+    // Top 3 posts of the week: own content only (no retweets/replies),
+    // ranked by engagement received.
+    const topWeek = tweets
+      .filter(
+        (t) =>
+          new Date(t.created_at).getTime() >= cutoff7 &&
+          classifyTweet(t) === "original"
+      )
+      .sort((a, b) => tweetInteractions(b) - tweetInteractions(a))
+      .slice(0, 3);
+    deleteTopTweets.run(f.handle);
+    for (const t of topWeek) {
+      insertTopTweet.run(
+        f.handle,
+        t.id,
+        t.text,
+        t.created_at,
+        t.public_metrics?.like_count ?? 0,
+        t.public_metrics?.retweet_count ?? 0,
+        t.public_metrics?.reply_count ?? 0,
+        t.public_metrics?.impression_count ?? 0
+      );
+    }
 
     done++;
     console.log(

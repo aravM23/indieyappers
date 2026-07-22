@@ -18,9 +18,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Yapper — the indie founder leaderboard",
+  title: "Building Out Loud — the indie founder leaderboard",
   description:
-    "Ranking the top indie tech founders on X by who's been yapping the most.",
+    "Ranking the top indie tech founders on X by who's building the loudest.",
 };
 
 export default function RootLayout({
