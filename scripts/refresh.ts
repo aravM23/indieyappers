@@ -1,31 +1,43 @@
 /**
- * Pulls live data from the X API for every founder and writes one activity
- * snapshot per founder. Run via `npm run refresh` (requires X_BEARER_TOKEN
- * in .env.local).
+ * Pulls live data from the X API and snapshots the leaderboard.
+ *
+ * Cost-aware design: every fetched post is stored in the `tweets` table, and
+ * later runs fetch incrementally (since_id), so only NEW posts are billed.
+ * All window aggregates (7d/30d counts, interactions, impressions) and the
+ * top-posts cache are computed from stored tweets.
+ *
+ * Usage:
+ *   npm run refresh                 # incremental refresh of everyone
+ *   npm run refresh -- @handle ...  # only those handles
+ *   npm run refresh -- --repoll     # also re-fetch metrics for posts from
+ *                                   # the last 3 days (engagement matures)
  */
 import { getDb } from "../lib/db";
 import {
   getUsersByHandles,
   getUserTweetsSince,
+  getTweetsByIds,
   classifyTweet,
-  tweetInteractions,
-  tweetImpressions,
   type XUser,
 } from "../lib/x-api";
 import type { FounderRow } from "../lib/types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+const REPOLL_DAYS = 3;
 
 async function main() {
   const db = getDb();
   let founders = db.prepare("SELECT * FROM founders").all() as FounderRow[];
 
-  // Optional: `npm run refresh -- handle1 handle2` refreshes only those.
-  const only = process.argv.slice(2).map((h) => h.replace(/^@/, "").toLowerCase());
+  const args = process.argv.slice(2);
+  const repoll = args.includes("--repoll");
+  const only = args
+    .filter((a) => !a.startsWith("--"))
+    .map((h) => h.replace(/^@/, "").toLowerCase());
   if (only.length > 0) {
     founders = founders.filter((f) => only.includes(f.handle.toLowerCase()));
   }
-  console.log(`Refreshing ${founders.length} founders...`);
+  console.log(`Refreshing ${founders.length} founders${repoll ? " (with metric repoll)" : ""}...`);
 
   console.log("Resolving profiles (users/by)...");
   const users = await getUsersByHandles(founders.map((f) => f.handle));
@@ -48,9 +60,7 @@ async function main() {
     }
     updateProfile.run(
       u.id,
-      // _normal is 48x48; strip the suffix for the full-size image
       u.profile_image_url?.replace("_normal", "") ?? null,
-      // banner URLs take a /1500x500 size suffix
       u.profile_banner_url ? `${u.profile_banner_url}/1500x500` : null,
       u.public_metrics?.followers_count ?? null,
       u.public_metrics?.tweet_count ?? null,
@@ -59,6 +69,98 @@ async function main() {
     );
   }
 
+  const upsertTweet = db.prepare(`
+    INSERT OR REPLACE INTO tweets (
+      tweet_id, handle, kind, text, created_at,
+      likes, retweets, replies, quotes, impressions
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+  const latestTweetId = db.prepare(
+    `SELECT tweet_id FROM tweets WHERE handle = ?
+     ORDER BY LENGTH(tweet_id) DESC, tweet_id DESC LIMIT 1`
+  );
+
+  const start30 = new Date(Date.now() - 30 * DAY_MS);
+
+  let done = 0;
+  let fetched = 0;
+  for (const f of founders) {
+    const u = byHandle.get(f.handle.toLowerCase());
+    if (!u) continue;
+
+    const since = latestTweetId.get(f.handle) as { tweet_id: string } | undefined;
+    let tweets;
+    try {
+      tweets = await getUserTweetsSince(
+        u.id,
+        since ? { sinceId: since.tweet_id } : { startTime: start30 }
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.includes("credits-depleted") || message.includes("402")) {
+        console.error(
+          `\nStopping: X API credits depleted after ${done} founders. ` +
+            "Top up credits and re-run; progress is kept."
+        );
+        break;
+      }
+      console.warn(`  @${f.handle} tweets fetch failed, skipping:`, message);
+      continue;
+    }
+
+    for (const t of tweets) {
+      upsertTweet.run(
+        t.id,
+        f.handle,
+        classifyTweet(t),
+        t.text ?? "",
+        t.created_at,
+        t.public_metrics?.like_count ?? 0,
+        t.public_metrics?.retweet_count ?? 0,
+        t.public_metrics?.reply_count ?? 0,
+        t.public_metrics?.quote_count ?? 0,
+        t.public_metrics?.impression_count ?? 0
+      );
+    }
+
+    fetched += tweets.length;
+    done++;
+    console.log(
+      `  [${done}/${founders.length}] @${f.handle}: +${tweets.length} new posts`
+    );
+  }
+
+  if (repoll) {
+    const cutoff = new Date(Date.now() - REPOLL_DAYS * DAY_MS).toISOString();
+    const ids = (
+      db
+        .prepare("SELECT tweet_id FROM tweets WHERE created_at >= ?")
+        .all(cutoff) as { tweet_id: string }[]
+    ).map((r) => r.tweet_id);
+    console.log(`Repolling metrics for ${ids.length} recent posts...`);
+    try {
+      const fresh = await getTweetsByIds(ids);
+      const updateMetrics = db.prepare(
+        `UPDATE tweets SET likes = ?, retweets = ?, replies = ?, quotes = ?, impressions = ?
+         WHERE tweet_id = ?`
+      );
+      for (const t of fresh) {
+        updateMetrics.run(
+          t.public_metrics?.like_count ?? 0,
+          t.public_metrics?.retweet_count ?? 0,
+          t.public_metrics?.reply_count ?? 0,
+          t.public_metrics?.quote_count ?? 0,
+          t.public_metrics?.impression_count ?? 0,
+          t.id
+        );
+      }
+    } catch (err) {
+      console.warn("  repoll failed:", err instanceof Error ? err.message : err);
+    }
+  }
+
+  // Snapshot every founder from stored tweets.
+  console.log("Computing snapshots from stored posts...");
   const insertSnapshot = db.prepare(`
     INSERT INTO activity_snapshots (
       handle, captured_at, followers, lifetime_tweet_count,
@@ -67,102 +169,75 @@ async function main() {
       interactions_7d, interactions_30d, impressions_7d, impressions_30d
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-
+  const aggregate = db.prepare(`
+    SELECT kind, COUNT(*) AS n,
+           SUM(likes + retweets + replies + quotes) AS inter,
+           SUM(impressions) AS imp
+    FROM tweets WHERE handle = ? AND created_at >= ?
+    GROUP BY kind
+  `);
   const deleteTopTweets = db.prepare("DELETE FROM top_tweets WHERE handle = ?");
-  const insertTopTweet = db.prepare(`
-    INSERT OR REPLACE INTO top_tweets (
-      handle, tweet_id, text, created_at, likes, retweets, replies, impressions
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  const rebuildTopTweets = db.prepare(`
+    INSERT INTO top_tweets (handle, tweet_id, text, created_at, likes, retweets, replies, impressions)
+    SELECT handle, tweet_id, text, created_at, likes, retweets, replies, impressions
+    FROM tweets
+    WHERE handle = ? AND kind = 'original' AND created_at >= ?
+    ORDER BY (likes + retweets + replies + quotes) DESC
+    LIMIT 3
   `);
 
-  const start30 = new Date(Date.now() - 30 * DAY_MS);
-  const cutoff7 = Date.now() - 7 * DAY_MS;
+  const cutoff7 = new Date(Date.now() - 7 * DAY_MS).toISOString();
+  const cutoff30 = start30.toISOString();
 
-  let done = 0;
   for (const f of founders) {
     const u = byHandle.get(f.handle.toLowerCase());
     if (!u) continue;
 
-    let tweets;
-    try {
-      tweets = await getUserTweetsSince(u.id, start30);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      if (message.includes("credits-depleted") || message.includes("402")) {
-        console.error(
-          `\nStopping: X API credits depleted after ${done} founders. ` +
-            "Top up credits in the X console and re-run npm run refresh " +
-            "(already-refreshed founders keep their new data)."
-        );
-        break;
-      }
-      console.warn(`  @${f.handle} tweets fetch failed, skipping:`, message);
-      continue;
-    }
-    const counts = {
-      "7d": { original: 0, reply: 0, retweet: 0, interactions: 0, impressions: 0 },
-      "30d": { original: 0, reply: 0, retweet: 0, interactions: 0, impressions: 0 },
-    };
-    for (const t of tweets) {
-      const kind = classifyTweet(t);
-      counts["30d"][kind]++;
-      counts["30d"].interactions += tweetInteractions(t);
-      counts["30d"].impressions += tweetImpressions(t);
-      if (new Date(t.created_at).getTime() >= cutoff7) {
-        counts["7d"][kind]++;
-        counts["7d"].interactions += tweetInteractions(t);
-        counts["7d"].impressions += tweetImpressions(t);
+    const windows = { "7d": cutoff7, "30d": cutoff30 };
+    const agg: Record<string, Record<string, { n: number; inter: number; imp: number }>> = {};
+    for (const [label, cutoff] of Object.entries(windows)) {
+      agg[label] = {};
+      for (const row of aggregate.all(f.handle, cutoff) as {
+        kind: string;
+        n: number;
+        inter: number;
+        imp: number;
+      }[]) {
+        agg[label][row.kind] = { n: row.n, inter: row.inter ?? 0, imp: row.imp ?? 0 };
       }
     }
+    const sum = (label: string, field: "inter" | "imp") =>
+      Object.values(agg[label]).reduce((s, v) => s + v[field], 0);
 
     insertSnapshot.run(
       f.handle,
       now,
       u.public_metrics?.followers_count ?? null,
       u.public_metrics?.tweet_count ?? null,
-      counts["7d"].original,
-      counts["7d"].reply,
-      counts["7d"].retweet,
-      counts["30d"].original,
-      counts["30d"].reply,
-      counts["30d"].retweet,
-      counts["7d"].interactions,
-      counts["30d"].interactions,
-      counts["7d"].impressions,
-      counts["30d"].impressions
+      agg["7d"].original?.n ?? 0,
+      agg["7d"].reply?.n ?? 0,
+      agg["7d"].retweet?.n ?? 0,
+      agg["30d"].original?.n ?? 0,
+      agg["30d"].reply?.n ?? 0,
+      agg["30d"].retweet?.n ?? 0,
+      sum("7d", "inter"),
+      sum("30d", "inter"),
+      sum("7d", "imp"),
+      sum("30d", "imp")
     );
 
-    // Top 3 posts of the week: own content only (no retweets/replies),
-    // ranked by engagement received.
-    const topWeek = tweets
-      .filter(
-        (t) =>
-          new Date(t.created_at).getTime() >= cutoff7 &&
-          classifyTweet(t) === "original"
-      )
-      .sort((a, b) => tweetInteractions(b) - tweetInteractions(a))
-      .slice(0, 3);
     deleteTopTweets.run(f.handle);
-    for (const t of topWeek) {
-      insertTopTweet.run(
-        f.handle,
-        t.id,
-        t.text,
-        t.created_at,
-        t.public_metrics?.like_count ?? 0,
-        t.public_metrics?.retweet_count ?? 0,
-        t.public_metrics?.reply_count ?? 0,
-        t.public_metrics?.impression_count ?? 0
-      );
-    }
-
-    done++;
-    console.log(
-      `  [${done}/${founders.length}] @${f.handle}: ${tweets.length} posts in 30d`
-    );
+    rebuildTopTweets.run(f.handle, cutoff7);
   }
 
-  console.log("Done.");
+  // Prune posts that have aged out of every window.
+  const pruned = db
+    .prepare("DELETE FROM tweets WHERE created_at < ?")
+    .run(new Date(Date.now() - 31 * DAY_MS).toISOString());
+
+  console.log(
+    `Done. ${fetched} new posts fetched, ${pruned.changes} old pruned.`
+  );
 }
 
 main().catch((err) => {

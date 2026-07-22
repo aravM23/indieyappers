@@ -99,6 +99,24 @@ function migrate(db: Database.Database) {
       impressions INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (handle, tweet_id)
     );
+
+    -- Every fetched post from the last ~31 days. The refresh script fetches
+    -- incrementally (since_id) and computes all window aggregates from here.
+    CREATE TABLE IF NOT EXISTS tweets (
+      tweet_id TEXT PRIMARY KEY,
+      handle TEXT NOT NULL REFERENCES founders(handle),
+      kind TEXT NOT NULL CHECK (kind IN ('original', 'reply', 'retweet')),
+      text TEXT NOT NULL DEFAULT '',
+      created_at TEXT NOT NULL,
+      likes INTEGER NOT NULL DEFAULT 0,
+      retweets INTEGER NOT NULL DEFAULT 0,
+      replies INTEGER NOT NULL DEFAULT 0,
+      quotes INTEGER NOT NULL DEFAULT 0,
+      impressions INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_tweets_handle_time
+      ON tweets (handle, created_at DESC);
   `);
 
   try {

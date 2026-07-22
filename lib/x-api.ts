@@ -76,10 +76,13 @@ export async function getUsersByHandles(handles: string[]): Promise<XUser[]> {
   return users;
 }
 
-/** Fetch all tweets for a user since startTime (paginated). */
+/**
+ * Fetch a user's tweets, paginated. Pass sinceId for a cheap incremental
+ * fetch (only newer posts are returned and billed); startTime otherwise.
+ */
 export async function getUserTweetsSince(
   userId: string,
-  startTime: Date
+  opts: { startTime?: Date; sinceId?: string }
 ): Promise<XTweet[]> {
   const tweets: XTweet[] = [];
   let paginationToken: string | undefined;
@@ -87,9 +90,10 @@ export async function getUserTweetsSince(
   do {
     const params = new URLSearchParams({
       max_results: "100",
-      start_time: startTime.toISOString(),
       "tweet.fields": "text,created_at,referenced_tweets,public_metrics",
     });
+    if (opts.sinceId) params.set("since_id", opts.sinceId);
+    else if (opts.startTime) params.set("start_time", opts.startTime.toISOString());
     if (paginationToken) params.set("pagination_token", paginationToken);
 
     const res = await xFetch(`${API_BASE}/users/${userId}/tweets?${params}`);
@@ -106,6 +110,25 @@ export async function getUserTweetsSince(
     paginationToken = body.meta?.next_token;
   } while (paginationToken);
 
+  return tweets;
+}
+
+/** Look up tweets by ID (100 per request) to refresh their metrics. */
+export async function getTweetsByIds(ids: string[]): Promise<XTweet[]> {
+  const tweets: XTweet[] = [];
+  for (let i = 0; i < ids.length; i += 100) {
+    const batch = ids.slice(i, i + 100);
+    const params = new URLSearchParams({
+      ids: batch.join(","),
+      "tweet.fields": "created_at,referenced_tweets,public_metrics",
+    });
+    const res = await xFetch(`${API_BASE}/tweets?${params}`);
+    if (!res.ok) {
+      throw new Error(`tweets lookup failed: ${res.status} ${await res.text()}`);
+    }
+    const body = (await res.json()) as { data?: XTweet[] };
+    tweets.push(...(body.data ?? []));
+  }
   return tweets;
 }
 
