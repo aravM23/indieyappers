@@ -43,7 +43,7 @@ export function YapperBoard({
   const copyLink = () => navigator.clipboard.writeText(globalThis.location.href);
   const share = () => {
     if (navigator.share) {
-      navigator.share({ title: "Building Out Loud", url: globalThis.location.href });
+      navigator.share({ title: "Indie Hot 100", url: globalThis.location.href });
     } else {
       copyLink();
     }
@@ -193,7 +193,9 @@ function PeopleTable({
           return (
           <tr
             key={e.handle}
-            onClick={() => router.push(`/company/${e.companySlug}`)}
+            onClick={() => {
+              if (e.companyName) router.push(`/company/${e.companySlug}`);
+            }}
             className={`cursor-pointer border-b border-border-subtle last:border-b-0 hover:bg-[var(--surface-hover-ink)] transition-colors duration-150 ${
               isMe ? "bg-[var(--iris-faint)]" : ""
             }`}

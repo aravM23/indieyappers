@@ -19,7 +19,7 @@ export async function TopNav() {
             priority
           />
           <span className="text-sm font-semibold tracking-tight text-text">
-            Building Out Loud
+            Indie Hot 100
           </span>
         </Link>
         <div className="flex items-center gap-3">

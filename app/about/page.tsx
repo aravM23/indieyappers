@@ -4,7 +4,7 @@ import Link from "next/link";
 import { TopNav } from "@/components/TopNav";
 
 export const metadata: Metadata = {
-  title: "About — Yapper",
+  title: "About — Indie Hot 100",
   description: "Why Stanley keeps score of the indie founder timeline.",
 };
 
@@ -22,7 +22,7 @@ export default function AboutPage() {
             className="h-[68px] w-[67px] select-none object-contain"
             priority
           />
-          <p className="stanley-kicker mt-6">About · Yapper</p>
+          <p className="stanley-kicker mt-6">About · Indie Hot 100</p>
           <h1 className="mt-1.5 font-display text-4xl leading-tight text-text">
             Stanley made this.
           </h1>

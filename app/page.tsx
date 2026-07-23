@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getLeaderboard, getStats } from "@/lib/leaderboard";
+import { getLeaderboardWithSignups, getStats } from "@/lib/leaderboard";
 import { getSessionUser } from "@/lib/auth";
 import type { TimeWindow } from "@/lib/types";
 import { AuthBanner } from "@/components/AuthBanner";
@@ -16,7 +16,7 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const window: TimeWindow = params.window === "30d" ? "30d" : "7d";
-  const entries = getLeaderboard(window);
+  const entries = await getLeaderboardWithSignups(window);
   const stats = getStats(window);
 
   const sessionUser = await getSessionUser();

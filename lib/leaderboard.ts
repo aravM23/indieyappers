@@ -1,4 +1,5 @@
 import { getDb } from "./db";
+import { pgConfigured, pgListJoinedFounders } from "./pgstore";
 import { companySlug } from "./slug";
 import {
   yapScore,
@@ -132,6 +133,56 @@ function getPreviousRanks(window: TimeWindow): Map<string, number> {
       yapScore(b.o, b.r, b.t) - yapScore(a.o, a.r, a.t)
   );
   return new Map(rows.map((row, i) => [row.handle, i + 1]));
+}
+
+/**
+ * Leaderboard plus sign-ups from the shared Postgres store (production).
+ * Signed-up accounts appear at the bottom with zero activity until the
+ * refresh pipeline starts tracking them.
+ */
+export async function getLeaderboardWithSignups(
+  window: TimeWindow
+): Promise<LeaderboardEntry[]> {
+  const entries = getLeaderboard(window);
+  if (!pgConfigured()) return entries;
+
+  let joined;
+  try {
+    joined = await pgListJoinedFounders();
+  } catch (err) {
+    console.error("failed to load sign-ups from Postgres:", err);
+    return entries;
+  }
+
+  const seen = new Set(entries.map((e) => e.handle.toLowerCase()));
+  for (const j of joined) {
+    if (seen.has(j.handle.toLowerCase())) continue;
+    entries.push({
+      rank: entries.length + 1,
+      handle: j.handle,
+      name: j.name,
+      product: "",
+      tier: 4,
+      tierLabel: "4 - Rising (<10K)",
+      avatarUrl: j.avatar_url ?? `https://unavatar.io/twitter/${j.handle}`,
+      companyName: null,
+      companyDomain: null,
+      companyLogo: null,
+      companySlug: companySlug(null, j.handle),
+      followers: j.followers,
+      postsOriginal: 0,
+      postsReply: 0,
+      postsRetweet: 0,
+      postsTotal: 0,
+      yapScore: 0,
+      interactions: 0,
+      impressions: 0,
+      delta: null,
+      rankDelta: null,
+      capturedAt: null,
+    });
+  }
+  return entries;
 }
 
 /** Everything the company page needs: profile, ranked members, rank history. */

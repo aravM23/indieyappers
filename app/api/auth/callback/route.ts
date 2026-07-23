@@ -7,6 +7,7 @@ import {
   VERIFIER_COOKIE,
   STATE_COOKIE,
 } from "@/lib/auth";
+import { pgConfigured, pgUpsertJoinedFounder } from "@/lib/pgstore";
 
 interface XMe {
   data?: {
@@ -84,6 +85,33 @@ export async function GET(request: Request) {
     .prepare("SELECT handle FROM founders WHERE LOWER(handle) = LOWER(?)")
     .get(me.username) as { handle: string } | undefined;
 
+  // With shared Postgres configured (production), the durable record lives
+  // there; the local SQLite path below only serves development.
+  if (pgConfigured()) {
+    const handle = existing?.handle ?? me.username;
+    await pgUpsertJoinedFounder({
+      handle,
+      name: me.name,
+      x_user_id: me.id,
+      avatar_url: avatar,
+      followers: me.public_metrics?.followers_count ?? null,
+      oauth_access_token: access_token,
+      oauth_refresh_token: refresh_token ?? null,
+    });
+    const token = await createSession(handle);
+    const res = NextResponse.redirect(new URL("/?auth=ok", url.origin));
+    res.cookies.set(SESSION_COOKIE, token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: url.protocol === "https:",
+      maxAge: 60 * 60 * 24 * 30,
+      path: "/",
+    });
+    res.cookies.delete(VERIFIER_COOKIE);
+    res.cookies.delete(STATE_COOKIE);
+    return res;
+  }
+
   let handle: string;
   if (existing) {
     handle = existing.handle;
@@ -123,7 +151,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const token = createSession(handle);
+  const token = await createSession(handle);
   const res = NextResponse.redirect(new URL("/?auth=ok", url.origin));
   res.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,

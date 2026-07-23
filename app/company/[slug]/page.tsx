@@ -20,8 +20,8 @@ export async function generateMetadata({
   const detail = getCompanyDetail(decodeURIComponent(slug), "7d");
   return {
     title: detail
-      ? `${detail.name} — Building Out Loud`
-      : "Building Out Loud",
+      ? `${detail.name} — Indie Hot 100`
+      : "Indie Hot 100",
   };
 }
 
