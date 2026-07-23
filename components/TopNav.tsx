@@ -11,7 +11,7 @@ export async function TopNav() {
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="/stanley-wings.png"
+            src="/stanley-mascot.png"
             alt="Stanley"
             width={30}
             height={31}
