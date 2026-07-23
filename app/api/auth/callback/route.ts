@@ -11,14 +11,22 @@ import {
   pgConfigured,
   pgUpsertJoinedFounder,
   pgUpdateJoinedMetrics,
+  pgUpdateJoinedCompany,
 } from "@/lib/pgstore";
 import { computeJoinedMetrics } from "@/lib/enroll";
+import { resolveCompany } from "@/lib/company-resolve";
 
 interface XMe {
   data?: {
     id: string;
     username: string;
     name: string;
+    description?: string;
+    url?: string;
+    entities?: {
+      url?: { urls?: { expanded_url?: string }[] };
+      description?: { urls?: { expanded_url?: string }[] };
+    };
     profile_image_url?: string;
     profile_banner_url?: string;
     public_metrics?: { followers_count: number; tweet_count: number };
@@ -72,7 +80,7 @@ export async function GET(request: Request) {
   };
 
   const meRes = await fetch(
-    "https://api.x.com/2/users/me?user.fields=profile_image_url,profile_banner_url,public_metrics",
+    "https://api.x.com/2/users/me?user.fields=profile_image_url,profile_banner_url,public_metrics,description,url,entities",
     { headers: { Authorization: `Bearer ${access_token}` } }
   );
   if (!meRes.ok) {
@@ -119,6 +127,15 @@ export async function GET(request: Request) {
         );
       } catch (err) {
         console.error(`instant metrics fetch failed for @${handle}:`, err);
+      }
+
+      // Find their company from their profile link or bio mentions so the
+      // board and their profile page carry the right brand immediately.
+      try {
+        const company = await resolveCompany(me);
+        if (company) await pgUpdateJoinedCompany(handle, company);
+      } catch (err) {
+        console.error(`company resolution failed for @${handle}:`, err);
       }
     }
 

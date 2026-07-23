@@ -169,14 +169,14 @@ export async function getLeaderboardWithSignups(
       rank: 0,
       handle: j.handle,
       name: j.name,
-      product: "",
+      product: j.company_name ?? "",
       tier: 4,
       tierLabel: "4 - Rising (<10K)",
       avatarUrl: j.avatar_url ?? `https://unavatar.io/twitter/${j.handle}`,
-      companyName: null,
-      companyDomain: null,
-      companyLogo: null,
-      companySlug: companySlug(null, j.handle),
+      companyName: j.company_name ?? null,
+      companyDomain: j.company_domain ?? null,
+      companyLogo: j.company_logo ?? null,
+      companySlug: companySlug(j.company_domain, j.company_name ?? j.handle),
       followers: j.followers,
       postsOriginal: original,
       postsReply: reply,
@@ -229,10 +229,12 @@ export async function getCompanyDetail(
     const joined = await pgGetJoinedFounder(top.handle);
     return {
       slug,
-      name: top.name,
-      domain: null,
-      logo: null,
-      description: `${top.name} joined the leaderboard with Sign in with X.`,
+      name: joined?.company_name ?? top.name,
+      domain: joined?.company_domain ?? null,
+      logo: joined?.company_logo ?? null,
+      description:
+        joined?.company_desc ??
+        `${top.name} joined the leaderboard with Sign in with X.`,
       bannerUrl: joined?.banner_url ?? null,
       members,
       topTweets: joined?.top_tweets_json

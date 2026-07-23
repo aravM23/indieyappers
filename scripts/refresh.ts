@@ -36,20 +36,40 @@ async function adoptSignups(db: ReturnType<typeof getDb>) {
   const insert = db.prepare(`
     INSERT OR IGNORE INTO founders (
       handle, name, product, tier, tier_label, approx_followers, notes,
-      x_user_id, avatar_url, followers, joined_via_x
-    ) VALUES (?, ?, '', 4, '4 - Rising (<10K)', ?, 'Joined via sign in with X', ?, ?, ?, 1)
+      x_user_id, avatar_url, followers, joined_via_x,
+      company_domain, company_logo, company_desc
+    ) VALUES (?, ?, ?, 4, '4 - Rising (<10K)', ?, 'Joined via sign in with X', ?, ?, ?, 1, ?, ?, ?)
+  `);
+  const updateCompany = db.prepare(`
+    UPDATE founders SET product = ?, company_domain = ?, company_logo = ?, company_desc = ?
+    WHERE handle = ? AND joined_via_x = 1 AND company_domain IS NULL AND ? IS NOT NULL
   `);
   let adopted = 0;
   for (const j of joined) {
     const res = insert.run(
       j.handle,
       j.name,
+      j.company_name ?? "",
       j.followers,
       j.x_user_id,
       j.avatar_url,
-      j.followers
+      j.followers,
+      j.company_domain,
+      j.company_logo,
+      j.company_desc
     );
     adopted += res.changes;
+    // Already-adopted members pick up newly resolved companies too.
+    if (res.changes === 0 && j.company_name) {
+      updateCompany.run(
+        j.company_name,
+        j.company_domain,
+        j.company_logo,
+        j.company_desc,
+        j.handle,
+        j.company_domain
+      );
+    }
   }
   if (adopted > 0) console.log(`Adopted ${adopted} new sign-ups into the pipeline.`);
 }

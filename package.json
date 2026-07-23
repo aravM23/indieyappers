@@ -11,6 +11,7 @@
     "enrich": "node --env-file-if-exists=.env.local --import tsx scripts/enrich.ts",
     "avatars": "node --env-file-if-exists=.env.local --import tsx scripts/avatars.ts",
     "snapshot": "node --import tsx scripts/snapshot.ts",
+    "resolve-companies": "node --env-file-if-exists=.env.local --import tsx scripts/resolve-companies.ts",
     "mock": "node --import tsx scripts/mock.ts"
   },
   "dependencies": {

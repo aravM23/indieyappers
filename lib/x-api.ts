@@ -4,6 +4,12 @@ export interface XUser {
   id: string;
   username: string;
   name: string;
+  description?: string;
+  url?: string;
+  entities?: {
+    url?: { urls?: { expanded_url?: string }[] };
+    description?: { urls?: { expanded_url?: string }[] };
+  };
   profile_image_url?: string;
   profile_banner_url?: string;
   public_metrics?: {
@@ -62,7 +68,7 @@ export async function getUsersByHandles(handles: string[]): Promise<XUser[]> {
     const batch = handles.slice(i, i + 100);
     const url =
       `${API_BASE}/users/by?usernames=${batch.join(",")}` +
-      `&user.fields=profile_image_url,profile_banner_url,public_metrics`;
+      `&user.fields=profile_image_url,profile_banner_url,public_metrics,description,url,entities`;
     const res = await xFetch(url);
     if (!res.ok) {
       throw new Error(`users/by failed: ${res.status} ${await res.text()}`);

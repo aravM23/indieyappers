@@ -31,6 +31,10 @@ export interface JoinedFounder extends JoinedMetrics {
   metrics_updated_at: string | null;
   /** JSON array of their top posts of the week (TopTweet shape). */
   top_tweets_json: string | null;
+  company_name: string | null;
+  company_domain: string | null;
+  company_logo: string | null;
+  company_desc: string | null;
 }
 
 let pool: Pool | null = null;
@@ -80,7 +84,11 @@ async function ensureSchema(): Promise<void> {
        ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS impressions_7d INTEGER NOT NULL DEFAULT 0;
        ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS impressions_30d INTEGER NOT NULL DEFAULT 0;
        ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS metrics_updated_at TIMESTAMPTZ;
-       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS top_tweets_json TEXT;`
+       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS top_tweets_json TEXT;
+       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS company_name TEXT;
+       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS company_domain TEXT;
+       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS company_logo TEXT;
+       ALTER TABLE joined_founders ADD COLUMN IF NOT EXISTS company_desc TEXT;`
     )
     .then(() => undefined);
   await schemaReady;
@@ -175,6 +183,19 @@ export async function pgUpdateJoinedMetrics(
       bannerUrl,
       topTweetsJson,
     ]
+  );
+}
+
+export async function pgUpdateJoinedCompany(
+  handle: string,
+  c: { name: string; domain: string; logo: string | null; description: string | null }
+) {
+  await ensureSchema();
+  await getPool().query(
+    `UPDATE joined_founders SET
+       company_name = $2, company_domain = $3, company_logo = $4, company_desc = $5
+     WHERE handle = $1`,
+    [handle, c.name, c.domain, c.logo, c.description]
   );
 }
 
