@@ -39,6 +39,17 @@ The bearer token comes from a read-only app in the [X developer console](https:/
 
 - Threads will be added to this later.
 
+## GrayPass monitoring (time-boxed)
+
+The site can run a two-week passive data-collection study for [GrayPass](https://graypass.org): the drop-in SDK loads in monitor mode, asks each visitor for consent, and then streams anonymized interaction-pattern frames (typing rhythm, mouse movement, scrolling — never text or page contents) to the GrayPass API. Frames are observation-only (`purpose="enroll"`, `research_optin=true`); GrayPass pseudonymizes them server-side into its `research_donations` training corpus. No overlays, no login gating — visitors who decline are never re-prompted.
+
+Enable it by setting all four env vars (see `.env.example`): `GRAYPASS_API_BASE`, `GRAYPASS_PUBLISHABLE_KEY`, `GRAYPASS_SECRET_KEY`, and `GRAYPASS_COLLECT_UNTIL` (14 days after launch). The cutoff is enforced in three places — the layout stops injecting the script, `/api/graypass/token` refuses to mint tokens, and the SDK's `data-until` stops a running loop — so the study ends on time even without a redeploy.
+
+On the GrayPass deployment itself, two settings must be in place or the data is silently discarded / blocked:
+
+- `GRAYPASS_RESEARCH_DONATIONS=1` — otherwise the research opt-in is ignored and nothing is persisted for training.
+- `GRAYPASS_ALLOWED_ORIGINS` must include `https://indiehackers.getstanley.ai` — otherwise the browser's cross-origin frame posts fail CORS.
+
 ## Structure
 
 - `app/` — Next.js App Router pages (server-rendered leaderboard)
